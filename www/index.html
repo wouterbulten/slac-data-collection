@@ -42,9 +42,35 @@
 
 			<div class="row">
 				<div class="col-xs-12">
+					<p>Save data to Firebase</p>
+
+					<p><button id="btn-upload-trace" class="btn btn-lg btn-primary disabled-before-load" disabled>Upload trace</button></p>
+				</div>
+			</div>
+
+			<hr>
+
+			<div class="row">
+				<div class="col-xs-12">
+					<p>Start monitoring accelerometer data:</p>
+
+					<p><button id="btn-start-motion-scan" class="btn btn-lg btn-primary disabled-before-load" disabled><i class='fa fa-circle-o-notch'></i> Start scanning</button></p>
+
+					<p>
+						<b>X:</b> <span id="motion-x"></span><br>
+						<b>Y:</b> <span id="motion-y"></span><br>
+						<b>Z:</b> <span id="motion-z"></span><br>
+					</p>
+				</div>
+			</div>
+
+			<hr>
+
+			<div class="row">
+				<div class="col-xs-12">
 					<p>Start search for all Bluetooth LE devices nearby:</p>
 
-					<p><button id="btn-find-all-devices" class="btn btn-lg btn-primary disabled-before-load" disabled><i class='fa fa-circle-o-notch'></i> Start scan</button></p>
+					<p><button id="btn-find-all-devices" class="btn btn-lg btn-primary disabled-before-load" disabled><i class='fa fa-circle-o-notch'></i> Start scanning</button></p>
 				</div>
 			</div>
 			<div class="row">
@@ -70,9 +96,11 @@
 		</div>
 
 		<script type="text/javascript" src="cordova.js"></script>
+		<script src="https://cdn.firebase.com/js/client/2.2.3/firebase.js"></script>
 		<script src="js/vendor/jquery.min.js"></script>
 		<script src="js/vendor/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/ble.js"></script>
+		<script type="text/javascript" src="js/datastore.js"></script>
 		<script type="text/javascript" src="js/slacdc.js"></script>
 		<script type="text/javascript" src="js/index.js"></script>
 	</body>

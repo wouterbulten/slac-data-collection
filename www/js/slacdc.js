@@ -1,25 +1,67 @@
 var slacdc = {
 
 	scanning: false,
+	
+	motionScannerId: undefined,
+	motionOptions: { frequency: 500 },
+
 	deviceList: {},
 
-	start: function() {
+	start: function(email, password) {
+
+		datastore.init(email, password);
 
 		this.initBluetooth(function(enabled) {
 			$('.disabled-before-load').prop("disabled", false);
 		});
 
+		$('#btn-upload-trace').click($.proxy(function() {
+			
+			datastore.addTrace({a:1, b:2});
+
+		}, this));
+
 		$('#btn-find-all-devices').click($.proxy(function() {
 			if(this.scanning) {
 				this.stopEndlessScan();
 				this.scanning = false;
-				$('#btn-find-all-devices').html("<i class='fa fa-circle-o-notch'></i> Start scan");
+				$('#btn-find-all-devices').html("<i class='fa fa-circle-o-notch'></i> Start scanning");
 			} else {
 				this.startEndlessScan(this.updateDevicesList)
 				this.scanning = true;
-				$('#btn-find-all-devices').html("<i class='fa fa-circle-o-notch fa-spin'></i> Stop scanning");
+				$('#btn-find-all-devices').html("<i class='fa fa-circle-o-notch fa-spin'></i> Stop scanning&nbsp;");
 			}
 		}, this));
+
+		$('#btn-start-motion-scan').click($.proxy(function() {
+
+			if(this.motionScannerId == undefined) {
+
+				$('#btn-start-motion-scan').html("<i class='fa fa-circle-o-notch fa-spin'></i> Stop scanning&nbsp;");
+
+				this.motionScannerId = navigator.accelerometer.watchAcceleration(this.updateMotionList, function() {
+					navigator.notification.alert(
+						'Could not read acceleration data.',
+						null,
+						'Status',
+						'Sorry!');
+				}, this.motionOptions);
+			}
+			else {
+				$('#btn-start-motion-scan').html("<i class='fa fa-circle-o-notch'></i> Start scanning");
+
+				navigator.accelerometer.clearWatch(this.motionScannerId);
+				this.motionScannerId = undefined;
+			}
+
+		}, this));
+	},
+
+	updateMotionList: function(data) {
+
+		$('#motion-x').html(data.x);
+		$('#motion-y').html(data.y);
+		$('#motion-z').html(data.z);
 	},
 
 	updateDevicesList: function(device) {

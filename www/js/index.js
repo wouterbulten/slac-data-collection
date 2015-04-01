@@ -16,6 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+var config = {
+    email: '<email>',
+    password: '<password>'
+};
+
 var app = {
     // Application Constructor
     initialize: function() {
@@ -33,7 +39,7 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
-        slacdc.start();
+        slacdc.start(config.email, config.password);
     },
 };
 
