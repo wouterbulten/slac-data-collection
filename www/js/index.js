@@ -18,8 +18,8 @@
  */
 
 var config = {
-    email: '<email>',
-    password: '<password>'
+    email: 'slacjs@wouterbulten.nl',
+    password: 'testtesttest'
 };
 
 var app = {

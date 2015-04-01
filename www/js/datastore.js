@@ -24,7 +24,13 @@ var datastore = {
 						'Ok');
 				} else {
 					console.log("Authenticated successfully with payload:", authData);
-					self.traceRef = self.ref.child("traces/" + authData.uid)
+					self.traceRef = self.ref.child("traces/" + authData.uid);
+
+					$('#login-form').hide();
+
+					$('.user-info').html('<em>Succesfully loged in to Firebase with UID:</em> ' + authData.uid);
+
+					$('.btn-disabled-login').attr('disabled', false);
 				}
 			}
 		);

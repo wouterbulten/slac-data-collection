@@ -35,6 +35,20 @@
 			<div class="row">
 				<div class="col-xs-12">
 					<h1>SLAC Data Collection</h1>
+
+					<form id="login-form">
+					<div class="form-group">
+						<label for="user-email">Email address</label>
+						<input type="email" class="form-control" id="user-email" placeholder="Enter email">
+					</div>
+					<div class="form-group">
+						<label for="user-password">Password</label>
+						<input type="password" class="form-control" id="user-password" placeholder="Password">
+					</div>
+					<button id="btn-login" class="btn btn-default" type="button">Submit</button>
+					</form>
+
+					<p class="user-info"></p>
 				</div>
 			</div>
 
@@ -42,9 +56,14 @@
 
 			<div class="row">
 				<div class="col-xs-12">
-					<p>Save data to Firebase</p>
+					<p>Save data to Firebase (login required)</p>
 
-					<p><button id="btn-upload-trace" class="btn btn-lg btn-primary disabled-before-load" disabled>Upload trace</button></p>
+					<p><button id="btn-start-trace" class="btn btn-lg btn-primary disabled-before-load" >Start recording</button>
+					<button id="btn-end-trace" class="btn btn-lg btn-primary" disabled>End recording</button></p>
+
+					<p><button id="btn-reset-trace" class="btn btn-lg btn-danger disabled-before-load" >Reset recording</button></p>
+					
+					<p><button id="btn-upload-trace" class="btn btn-lg btn-primary btn-disabled-login" disabled>Upload recording</button></p>
 				</div>
 			</div>
 
@@ -52,7 +71,7 @@
 
 			<div class="row">
 				<div class="col-xs-12">
-					<p>Start monitoring accelerometer data:</p>
+					<p>Start monitoring accelerometer data. This will not save any data locally.</p>
 
 					<p><button id="btn-start-motion-scan" class="btn btn-lg btn-primary disabled-before-load" disabled><i class='fa fa-circle-o-notch'></i> Start scanning</button></p>
 
@@ -68,7 +87,7 @@
 
 			<div class="row">
 				<div class="col-xs-12">
-					<p>Start search for all Bluetooth LE devices nearby:</p>
+					<p>Start search for all Bluetooth LE devices nearby. This will not save any data locally.</p>
 
 					<p><button id="btn-find-all-devices" class="btn btn-lg btn-primary disabled-before-load" disabled><i class='fa fa-circle-o-notch'></i> Start scanning</button></p>
 				</div>

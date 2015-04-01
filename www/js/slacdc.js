@@ -5,19 +5,60 @@ var slacdc = {
 	motionScannerId: undefined,
 	motionOptions: { frequency: 500 },
 
+	recordingStarted: false,
+
 	deviceList: {},
 
-	start: function(email, password) {
+	trace: {
+		devices: {
 
-		datastore.init(email, password);
+		},
+
+		motion: []
+	},
+
+	start: function(email, password) {
 
 		this.initBluetooth(function(enabled) {
 			$('.disabled-before-load').prop("disabled", false);
 		});
 
+		$('#btn-start-trace').click($.proxy(function() {
+			this.recordingStarted = true;
+
+			$('#btn-start-trace').attr('disabled', true);
+			$('#btn-end-trace').attr('disabled', false);
+
+		}, this));
+
+		$('#btn-end-trace').click($.proxy(function() {
+			this.recordingStarted = false;
+			console.log(JSON.stringify(this.trace));
+
+			$('#btn-start-trace').attr('disabled', false);
+			$('#btn-end-trace').attr('disabled', true);
+		}, this));
+
+		$('#btn-reset-trace').click(function() {
+			
+			navigator.notification.confirm("Do you really want to reset the trace? (Deletes local data)", function(b) {
+
+				if(b == 1){ //= first button, delete
+					slacdc.trace = {
+						devices: {},
+						motion: []
+					};
+				}
+			}, "Delete trace", ["Delete", "Cancel"]);
+		});
+
+		$('#btn-login').click($.proxy(function() {
+			this.login();
+		}, this));
+
 		$('#btn-upload-trace').click($.proxy(function() {
 			
-			datastore.addTrace({a:1, b:2});
+			datastore.addTrace(this.trace);
 
 		}, this));
 
@@ -57,18 +98,31 @@ var slacdc = {
 		}, this));
 	},
 
+	login: function() {
+		$('#btn-login').attr('disabled', true);
+		datastore.init($('#user-email').val(), $('#user-password').val());
+	},
+
 	updateMotionList: function(data) {
 
 		$('#motion-x').html(data.x);
 		$('#motion-y').html(data.y);
 		$('#motion-z').html(data.z);
+
+		//If the recording has started, we save data to our trace variable
+		if(slacdc.recordingStarted) {
+
+			slacdc.trace.motion.push([(new Date).getTime(), data.x, data.y, data.z]);
+		}
 	},
 
 	updateDevicesList: function(device) {
 		
+		var now = (new Date).getTime();
+
 		if(slacdc.deviceList.hasOwnProperty(device.address)) {
 			slacdc.deviceList[device.address].rssi = device.rssi;
-			slacdc.deviceList[device.address].lastSeen = (new Date).getTime();
+			slacdc.deviceList[device.address].lastSeen = now;
 
 			console.log('Device update ' + JSON.stringify(device));	
 		}
@@ -82,6 +136,21 @@ var slacdc = {
 
 			console.log('Found new device ' + JSON.stringify(device));
 		}
+
+		//If the recording has started, we save data to our trace variable
+		if(slacdc.recordingStarted) {
+			if(slacdc.trace.devices[device.address] == undefined) {
+
+				if(device.name == undefined) {
+					device.name = 'undefined';
+				}
+
+				slacdc.trace.devices[device.address] = {name: device.name, rssi: {}};
+			}
+
+			slacdc.trace.devices[device.address].rssi[now] = device.rssi;
+		}
+
 
 		$('#device-list > tbody').html('');
 
