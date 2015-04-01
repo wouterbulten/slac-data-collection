@@ -37,22 +37,34 @@
 					<h1>SLAC Data Collection</h1>
 				</div>
 			</div>
+
+			<hr>
+
 			<div class="row">
 				<div class="col-xs-12">
-					<button id="btn-find-all-devices" class="btn btn-default disabled-before-load" disabled>Find all devices</button>
+					<p>Start search for all Bluetooth LE devices nearby:</p>
 
-					<table id="device-list">
-						<thead>
-							<tr>
-								<th>Device</th>
-								<th>RSSI</th>
-							</tr>
-						</thead>
+					<p><button id="btn-find-all-devices" class="btn btn-lg btn-primary disabled-before-load" disabled><i class='fa fa-circle-o-notch'></i> Start scan</button></p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="table-responsive">
+						<table id="device-list" class="table table-striped">
+							<thead>
+								<tr>
+									<th>Device</th>
+									<th>RSSI</th>
+									<th>Last seen</th>
+									<th>Address</th>
+								</tr>
+							</thead>
 
-						<tbody>
+							<tbody>
 
-						</tbody>
-					</table>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>

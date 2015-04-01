@@ -1,7 +1,7 @@
 var slacdc = {
 
 	scanning: false,
-	deviceList: [],
+	deviceList: {},
 
 	start: function() {
 
@@ -13,24 +13,49 @@ var slacdc = {
 			if(this.scanning) {
 				this.stopEndlessScan();
 				this.scanning = false;
-				$('#btn-find-all-devices').html("Find all devices");
+				$('#btn-find-all-devices').html("<i class='fa fa-circle-o-notch'></i> Start scan");
 			} else {
 				this.startEndlessScan(this.updateDevicesList)
 				this.scanning = true;
-				$('#btn-find-all-devices').html("Stop scanning");
+				$('#btn-find-all-devices').html("<i class='fa fa-circle-o-notch fa-spin'></i> Stop scanning");
 			}
 		}, this));
 	},
 
 	updateDevicesList: function(device) {
-		console.log('Found new device ' + JSON.stringify(device));
+		
+		if(slacdc.deviceList.hasOwnProperty(device.address)) {
+			slacdc.deviceList[device.address].rssi = device.rssi;
+			slacdc.deviceList[device.address].lastSeen = (new Date).getTime();
 
-		$('#device-list > tbody:last').append(
+			console.log('Device update ' + JSON.stringify(device));	
+		}
+		else {
+			slacdc.deviceList[device.address] = {
+				rssi: device.rssi,
+				address: device.address,
+				name: device.name,
+				lastSeen: (new Date).getTime()
+			};
+
+			console.log('Found new device ' + JSON.stringify(device));
+		}
+
+		$('#device-list > tbody').html('');
+
+		for(var d in slacdc.deviceList) {
+
+			$('#device-list > tbody:last').append(
 			 '<tr><td>'
-			+ device.name
+			+ slacdc.deviceList[d].name
 			+ '</td><td>'
-			+ device.rssi
+			+ slacdc.deviceList[d].rssi
+			+ '</td><td>'
+			+ (new Date(slacdc.deviceList[d].lastSeen)).toUTCString()
+			+ '</td><td>'
+			+ slacdc.deviceList[d].address
 			+ '</td></tr>');
+		}
 	},
 
 	initBluetooth: function(callback) {
