@@ -2,7 +2,7 @@ var datastore = {
 	
 
 	refBaseUrl: "https://slac-dc.firebaseio.com/",
-	
+
 
 	ref: undefined,
 	traceRef: undefined,
@@ -56,6 +56,22 @@ var datastore = {
 	},
 
 	addTrace: function(trace) {
-		this.traceRef.push(trace);
+		this.traceRef.push(trace, function(error) {
+
+			if(error) {
+				navigator.notification.alert(
+						'Data not saved! ' + error,
+						null,
+						'Status',
+						'Ok');
+			}
+			else {
+				navigator.notification.alert(
+						'Data saved!',
+						null,
+						'Status',
+						'Ok');
+			}
+		});
 	}
 }
