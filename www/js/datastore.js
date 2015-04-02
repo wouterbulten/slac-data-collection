@@ -1,10 +1,14 @@
 var datastore = {
 	
+
+	refBaseUrl: "https://slac-dc.firebaseio.com/",
+	
+
 	ref: undefined,
 	traceRef: undefined,
 
 	init: function(username, password) {
-		this.ref = new Firebase("https://slac-dc.firebaseio.com/");
+		this.ref = new Firebase(this.refBaseUrl);
 
 		var self = this;
 

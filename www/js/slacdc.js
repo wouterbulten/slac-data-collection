@@ -3,7 +3,7 @@ var slacdc = {
 	scanning: false,
 	
 	motionScannerId: undefined,
-	motionOptions: { frequency: 500 },
+	motionOptions: { frequency: 50 },
 
 	recordingStarted: false,
 
@@ -16,6 +16,11 @@ var slacdc = {
 
 		motion: []
 	},
+
+	motionSampleSize: 10,
+	motionSample: [],
+	motionViewUpdate: 20,
+	motionViewIteration: 0,
 
 	start: function(email, password) {
 
@@ -106,14 +111,36 @@ var slacdc = {
 
 	updateMotionList: function(data) {
 
-		$('#motion-x').html(data.x);
-		$('#motion-y').html(data.y);
-		$('#motion-z').html(data.z);
+		if(++slacdc.motionViewIteration > slacdc.motionViewUpdate) {
+			$('#motion-x').html(data.x);
+			$('#motion-y').html(data.y);
+			$('#motion-z').html(data.z);
+
+			slacdc.motionViewIteration = 0;
+		}
 
 		//If the recording has started, we save data to our trace variable
 		if(slacdc.recordingStarted) {
 
-			slacdc.trace.motion.push([(new Date).getTime(), data.x, data.y, data.z]);
+			slacdc.motionSample.push([data.x, data.y, data.z]);
+
+			if(slacdc.motionSample.length > slacdc.motionSampleSize)
+			{
+				var xSum = ySum = zSum = 0;
+				var length = slacdc.motionSample.length;
+
+				for(var i = 0; i < length; i++)
+				{
+					xSum += slacdc.motionSample[i][0];
+					ySum += slacdc.motionSample[i][1];
+					zSum += slacdc.motionSample[i][2];
+				}
+
+				slacdc.trace.motion.push([(new Date).getTime(), xSum/length, ySum/length, zSum/length]);
+				slacdc.motionSample = []
+
+			}
+			
 		}
 	},
 
@@ -124,8 +151,6 @@ var slacdc = {
 		if(slacdc.deviceList.hasOwnProperty(device.address)) {
 			slacdc.deviceList[device.address].rssi = device.rssi;
 			slacdc.deviceList[device.address].lastSeen = now;
-
-			console.log('Device update ' + JSON.stringify(device));	
 		}
 		else {
 			slacdc.deviceList[device.address] = {
