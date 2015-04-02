@@ -58,6 +58,7 @@ var slacdc = {
 
 		$('#btn-upload-trace').click($.proxy(function() {
 			
+			console.log('Uploading trace..');
 			datastore.addTrace(this.trace);
 
 		}, this));
