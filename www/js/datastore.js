@@ -35,6 +35,19 @@ var datastore = {
 			}
 		);
 
+
+		var connectedRef = this.ref.child(".info/connected");
+		connectedRef.on("value", function(snap) {
+		  if (snap.val() === true) {
+		  	$('.ds-status').html('Firebase connection online');
+		    $('.ds-status').removeClass('bg-danger');
+		    $('.ds-status').addClass('bg-success');
+		  } else {
+		  	$('.ds-status').html('Firebase connection offline');
+		    $('.ds-status').removeClass('bg-success');
+		    $('.ds-status').addClass('bg-danger');
+		  }
+		});
 		
 	},
 
