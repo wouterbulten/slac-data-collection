@@ -13,7 +13,8 @@ cordova plugin remove org.apache.cordova.dialogs
 cordova plugin add org.apache.cordova.dialogs
 cordova plugin remove org.apache.cordova.console
 cordova plugin add org.apache.cordova.console
-
+cordova plugin remove org.apache.cordova.device-orientation
+cordova plugin add org.apache.cordova.device-orientation
 
 echo "New plugin versions"
 cordova plugin

@@ -6,6 +6,10 @@ Data can sent to a Firebase instance using web sockets (if supported by the devi
 
 Partially based on code from from https://github.com/dobots/crownstone-app
 
+# Installation
+
+1. Run `scripts/update_cordova.sh`
+
 # Running
 
 1. Change the Firebase ref in js/datastore.js to your own reference (only needed for storing)
