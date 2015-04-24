@@ -17,11 +17,6 @@
  * under the License.
  */
 
-var config = {
-    email: 'slacjs@wouterbulten.nl',
-    password: 'testtesttest'
-};
-
 var app = {
     // Application Constructor
     initialize: function() {
@@ -39,7 +34,7 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
-        slacdc.start(config.email, config.password);
+        slacdc.start();
     },
 };
 

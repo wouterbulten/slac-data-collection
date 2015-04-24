@@ -22,7 +22,7 @@ var slacdc = {
 	motionViewUpdate: 20,
 	motionViewIteration: 0,
 
-	start: function(email, password) {
+	start: function() {
 
 		this.initBluetooth(function(enabled) {
 			$('.disabled-before-load').prop("disabled", false);
@@ -86,7 +86,7 @@ var slacdc = {
 
 				$('#btn-start-motion-scan').html("<i class='fa fa-circle-o-notch fa-spin'></i> Stop scanning&nbsp;");
 
-				this.motionScannerId = navigator.accelerometer.watchAcceleration(this.updateMotionList, function() {
+				this.motionScannerId = navigator.accelerometer.watchAcceleration(this.getCompassDataAndForward, function() {
 					navigator.notification.alert(
 						'Could not read acceleration data.',
 						null,
@@ -109,12 +109,28 @@ var slacdc = {
 		datastore.init($('#user-email').val(), $('#user-password').val());
 	},
 
-	updateMotionList: function(data) {
+	getCompassDataAndForward: function(data) {
+
+		navigator.compass.getCurrentHeading(function(heading) {
+			slacdc.updateMotionList(data, heading);
+		}, function() {
+			navigator.notification.alert(
+				'Could not read compass data.',
+				null,
+				'Status',
+				'Sorry!');
+		});
+	},
+
+	updateMotionList: function(data, heading) {
+		
+		heading = heading.magneticHeading;
 
 		if(++slacdc.motionViewIteration > slacdc.motionViewUpdate) {
 			$('#motion-x').html(data.x);
 			$('#motion-y').html(data.y);
 			$('#motion-z').html(data.z);
+			$('#motion-c').html(heading);
 
 			slacdc.motionViewIteration = 0;
 		}
@@ -122,7 +138,7 @@ var slacdc = {
 		//If the recording has started, we save data to our trace variable
 		if(slacdc.recordingStarted) {
 
-			slacdc.motionSample.push([data.x, data.y, data.z]);
+			slacdc.motionSample.push([data.x, data.y, data.z, heading]);
 
 			if(slacdc.motionSample.length > slacdc.motionSampleSize)
 			{
@@ -136,7 +152,7 @@ var slacdc = {
 					zSum += slacdc.motionSample[i][2];
 				}
 
-				slacdc.trace.motion.push([(new Date).getTime(), xSum/length, ySum/length, zSum/length]);
+				slacdc.trace.motion.push([(new Date).getTime(), xSum/length, ySum/length, zSum/length, heading]);
 				slacdc.motionSample = []
 
 			}
