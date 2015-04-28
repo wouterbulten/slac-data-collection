@@ -1,3 +1,0 @@
-[submodule "ext-plugins/cordova-plugin-stepcounter"]
-	path = ext-plugins/cordova-plugin-stepcounter
-	url = https://github.com/texh/cordova-plugin-stepcounter

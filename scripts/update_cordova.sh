@@ -17,8 +17,6 @@ cordova plugin remove org.apache.cordova.device-orientation
 cordova plugin add org.apache.cordova.device-orientation
 cordova plugin remove org.apache.cordova.file
 cordova plugin add org.apache.cordova.file
-cordova plugin remove ./ext-plugins/cordova-plugin-stepcounter
-cordova plugin add ./ext-plugins/cordova-plugin-stepcounter
 
 echo "New plugin versions"
 cordova plugin
