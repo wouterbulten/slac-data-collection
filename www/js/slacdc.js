@@ -17,7 +17,7 @@ var slacdc = {
 		motion: []
 	},
 
-	motionSampleSize: 10,
+	motionSampleSize: 1,
 	motionSample: [],
 	motionViewUpdate: 10,
 	motionViewIteration: 0,
@@ -31,6 +31,10 @@ var slacdc = {
 		$('#btn-start-trace').click($.proxy(function() {
 			this.recordingStarted = true;
 
+			//Make sure everything works in the background
+			cordova.plugins.backgroundMode.setDefaults({ title: 'SLACdc running', text:'Background monitoring'});
+			cordova.plugins.backgroundMode.enable();
+
 			$('#btn-start-trace').attr('disabled', true);
 			$('#btn-end-trace').attr('disabled', false);
 
@@ -38,6 +42,7 @@ var slacdc = {
 
 		$('#btn-end-trace').click($.proxy(function() {
 			this.recordingStarted = false;
+			cordova.plugins.backgroundMode.disable();
 			console.log(JSON.stringify(this.trace));
 
 			$('#btn-start-trace').attr('disabled', false);
@@ -183,7 +188,7 @@ var slacdc = {
 
 			slacdc.motionSample.push([data.x, data.y, data.z, heading]);
 
-			if(slacdc.motionSample.length > slacdc.motionSampleSize)
+			if(slacdc.motionSample.length >= slacdc.motionSampleSize)
 			{
 				var xSum = ySum = zSum = 0;
 				var length = slacdc.motionSample.length;
@@ -198,8 +203,13 @@ var slacdc = {
 				slacdc.trace.motion.push([(new Date).getTime(), xSum/length, ySum/length, zSum/length, heading]);
 				slacdc.motionSample = []
 
+				if((slacdc.trace.motion.length % 100) === 0) {
+					cordova.plugins.backgroundMode.configure({
+						ticker: 'Motion trace length: ' + slacdc.trace.motion.length,
+						text: 'Motion trace length: ' + slacdc.trace.motion.length
+					});
+				}
 			}
-			
 		}
 	},
 

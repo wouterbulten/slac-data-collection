@@ -17,6 +17,8 @@ cordova plugin remove org.apache.cordova.device-orientation
 cordova plugin add org.apache.cordova.device-orientation
 cordova plugin remove org.apache.cordova.file
 cordova plugin add org.apache.cordova.file
+cordova plugin remove de.appplant.cordova.plugin.background-mode
+cordova plugin add de.appplant.cordova.plugin.background-mode
 
 echo "New plugin versions"
 cordova plugin
