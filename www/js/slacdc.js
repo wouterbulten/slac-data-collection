@@ -3,7 +3,7 @@ var slacdc = {
 	scanning: false,
 	
 	motionScannerId: undefined,
-	motionOptions: { frequency: 50 },
+	motionOptions: { frequency: 25 },
 
 	recordingStarted: false,
 
@@ -19,7 +19,7 @@ var slacdc = {
 
 	motionSampleSize: 10,
 	motionSample: [],
-	motionViewUpdate: 20,
+	motionViewUpdate: 10,
 	motionViewIteration: 0,
 
 	start: function() {
@@ -65,6 +65,49 @@ var slacdc = {
 			
 			console.log('Uploading trace..');
 			datastore.addTrace(this.trace);
+
+		}, this));
+
+		$('#btn-save-trace').click($.proxy(function() {
+			
+			console.log('Saving trace..');
+			var data = JSON.stringify(this.trace);
+
+			console.log('Trying to save to ' + cordova.file.externalDataDirectory)
+			window.resolveLocalFileSystemURL(cordova.file.externalDataDirectory, function(dir) {
+				console.log("Got main dir " + dir.fullPath);
+				dir.getFile("sdc_" + (new Date).getTime() + ".json", {create:true}, function(file) {
+					console.log("Got file object " + file);
+					
+					file.createWriter(function(fileWriter) {
+						
+						fileWriter.seek(fileWriter.length);
+						fileWriter.write(data);
+						console.log("Saved to " + fileWriter.fileName);
+
+						navigator.notification.alert(
+							'Data saved!',
+							null,
+							'Status',
+							'Ok'
+						);
+
+					}, function(error) {
+						navigator.notification.alert(
+						'Could not save data with error code: ' + error.code,
+						null,
+						'Status',
+						'Sorry!')
+					});
+				});
+			}, function(error) {
+				navigator.notification.alert(
+				'Could not save data with error code: ' + error.code,
+				null,
+				'Status',
+				'Sorry!')
+			});
+
 
 		}, this));
 

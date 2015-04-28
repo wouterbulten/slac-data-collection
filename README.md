@@ -2,7 +2,7 @@
 
 Cordova app that monitors nearby Bluetooth LE devices and reports the singal strength (RSSI) of each device. Accelerometer data can be monitored simultaneously.
 
-Data can sent to a Firebase instance using web sockets (if supported by the device) and support user/password authentication.
+Data can sent to a Firebase instance using web sockets (if supported by the device) and supports user/password authentication or data can be stored to the local storage (in JSON format).
 
 Partially based on code from from https://github.com/dobots/crownstone-app
 
@@ -22,3 +22,6 @@ You can use the following to read log messages from the app:
 
 `adb logcat CordovaLog:D *:S`
 
+# Note
+
+Please note that this app was only created for development purposes and to quickly log RSSI/motion data. The code is largely undocumented.
