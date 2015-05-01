@@ -1,7 +1,8 @@
 var slacdc = {
 
 	scanning: false,
-	
+	restartTimer: undefined,
+
 	motionScannerId: undefined,
 	motionOptions: { frequency: 25 },
 
@@ -120,9 +121,29 @@ var slacdc = {
 			if(this.scanning) {
 				this.stopEndlessScan();
 				this.scanning = false;
+				clearInterval(this.restartTimer)
 				$('#btn-find-all-devices').html("<i class='fa fa-circle-o-notch'></i> Start scanning");
 			} else {
 				this.startEndlessScan(this.updateDevicesList)
+
+				 // [9.12.14] Some devices (such as the Nexus 4) only report
+	            //   the first advertisement for each device. all
+	            //   subsequently received advertisements are dropped. In order
+	            //   to receive rssi updates for such devices too, we now
+	            //   restart the ble scan every second, thus getting at least
+	            //     an rssi update every second
+	            // if (device.model == "Nexus 4") {
+	                this.restartTimer = setInterval(function() {
+	                    
+	                    if(slacdc.scanning)
+	                    {
+	                    	console.log("restart scan");
+	                   	 	slacdc.stopEndlessScan();
+	                    	slacdc.startEndlessScan(slacdc.updateDevicesList);
+	                    }
+	                }, 1000);
+	            // }
+	            
 				this.scanning = true;
 				$('#btn-find-all-devices').html("<i class='fa fa-circle-o-notch fa-spin'></i> Stop scanning&nbsp;");
 			}
@@ -220,6 +241,8 @@ var slacdc = {
 		if(slacdc.deviceList.hasOwnProperty(device.address)) {
 			slacdc.deviceList[device.address].rssi = device.rssi;
 			slacdc.deviceList[device.address].lastSeen = now;
+
+			console.log('Updated device' + JSON.stringify(device));
 		}
 		else {
 			slacdc.deviceList[device.address] = {
@@ -289,25 +312,26 @@ var slacdc = {
 		//console.log('start endless scan');
 		var paramsObj = {}
 		bluetoothle.startScan(function(obj) {  // start scan success
-				if (obj.status == 'scanResult') {
-					callback(obj)
-				} else if (obj.status == 'scanStarted') {
-					//console.log('Endless scan was started successfully');
-				} else {
-					console.log('Unexpected start scan status: ' + obj.status);
-					console.log('Stopping scan');
-					stopEndlessScan();
-				}
-			}, 
-			function(obj) { // start scan error
-				console.log('Scan error', obj.status);
-				navigator.notification.alert(
-						'Could not find a device using Bluetooth scanning.',
-						null,
-						'Status',
-						'Sorry!');
-			}, 
-			paramsObj);
+			console.log(JSON.stringify(obj))
+			if (obj.status == 'scanResult') {
+				callback(obj)
+			} else if (obj.status == 'scanStarted') {
+				//console.log('Endless scan was started successfully');
+			} else {
+				console.log('Unexpected start scan status: ' + obj.status);
+				console.log('Stopping scan');
+				stopEndlessScan();
+			}
+		}, 
+		function(obj) { // start scan error
+			console.log('Scan error', obj.status);
+			navigator.notification.alert(
+					'Could not find a device using Bluetooth scanning.',
+					null,
+					'Status',
+					'Sorry!');
+		}, 
+		paramsObj);
 	},
 
 	stopEndlessScan: function() {
